@@ -1,44 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import api from './components/api';
-import StatusList from './components/StatusList';
-import TransitionList from './components/TransitionList';
+import React, { useState } from 'react';
 import AddStatusForm from './components/AddStatusForm';
 import AddTransitionForm from './components/AddTransitionForm';
+import StatusList from './components/StatusList';
+import TransitionList from './components/TransitionList';
+import axios from 'axios';
 
-const App = () => {
-  const [statuses, setStatuses] = useState([]);
-  const [transitions, setTransitions] = useState([]);
+function App() {
+    const [statuses, setStatuses] = useState([]); // רשימת הסטטוסים
+    const [transitions, setTransitions] = useState([]); // רשימת המעברים
 
-  useEffect(() => {
-    api.getStatuses().then((res) => setStatuses(res.data));
-    api.getTransitions().then((res) => setTransitions(res.data));
-  }, []);
+    // פונקציה לשליחת Workflow ל-JIRA
+    const createWorkflow = async () => {
+        try {
+            const response = await axios.post('http://localhost:3001/create-workflow', {
+                statuses,
+                transitions,
+            });
+            alert('Workflow created successfully!');
+        } catch (error) {
+            console.error('Error creating workflow:', error);
+            alert('Failed to create workflow. Check server logs.');
+        }
+    };
 
-  const handleAddStatus = (name) => {
-    api.addStatus(name).then(() => api.getStatuses().then((res) => setStatuses(res.data)));
-  };
+    // פונקציה לאיפוס כל הנתונים
+    const resetWorkflow = () => {
+        setStatuses([]);
+        setTransitions([]);
+    };
 
-  const handleDeleteStatus = (name) => {
-    api.deleteStatus(name).then(() => api.getStatuses().then((res) => setStatuses(res.data)));
-  };
+    return (
+        <div style={{ padding: '20px' }}>
+            <h1>Build a Workflow</h1>
 
-  const handleAddTransition = (name, from, to) => {
-    api.addTransition(name, from, to).then(() => api.getTransitions().then((res) => setTransitions(res.data)));
-  };
+            {/* טופס להוספת סטטוסים */}
+            <AddStatusForm statuses={statuses} setStatuses={setStatuses} />
 
-  const handleDeleteTransition = (name) => {
-    api.deleteTransition(name).then(() => api.getTransitions().then((res) => setTransitions(res.data)));
-  };
+            {/* טופס להוספת מעברים */}
+            <AddTransitionForm 
+                transitions={transitions} 
+                setTransitions={setTransitions} 
+                statuses={statuses} // העברת הסטטוסים לשימוש בתיבות הבחירה
+            />
 
-  return (
-    <div>
-      <h1>JIRA Status Manager</h1>
-      <AddStatusForm onAdd={handleAddStatus} />
-      <StatusList statuses={statuses} onDelete={handleDeleteStatus} />
-      <AddTransitionForm statuses={statuses.map((s) => s.name)} onAdd={handleAddTransition} />
-      <TransitionList transitions={transitions} onDelete={handleDeleteTransition} />
-    </div>
-  );
-};
+            {/* רשימת הסטטוסים */}
+            <StatusList statuses={statuses} />
+
+            {/* רשימת המעברים */}
+            <TransitionList transitions={transitions} />
+
+            {/* כפתור יצירת Workflow */}
+            <button 
+                onClick={createWorkflow} 
+                style={{
+                    marginTop: '20px',
+                    marginRight: '10px',
+                    padding: '10px 20px',
+                    backgroundColor: 'green',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                }}
+            >
+                Create Workflow
+            </button>
+
+            {/* כפתור איפוס */}
+            <button 
+                onClick={resetWorkflow} 
+                style={{
+                    marginTop: '20px',
+                    padding: '10px 20px',
+                    backgroundColor: 'red',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                }}
+            >
+                Reset
+            </button>
+        </div>
+    );
+}
 
 export default App;

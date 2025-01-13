@@ -1,19 +1,18 @@
 import React from 'react';
 
-const TransitionList = ({ transitions, onDelete }) => {
-  return (
-    <div>
-      <h3>Transitions</h3>
-      <ul>
-        {transitions.map((transition) => (
-          <li key={transition.name}>
-            {transition.name}: {transition.from} → {transition.to}
-            <button onClick={() => onDelete(transition.name)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+function TransitionList({ transitions }) {
+    return (
+        <div>
+            <h2>Transitions</h2>
+            <ul>
+                {transitions.map((transition, index) => (
+                    <li key={index}>
+                        {transition.name}: {transition.from} {"->"} {transition.to}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
 
 export default TransitionList;

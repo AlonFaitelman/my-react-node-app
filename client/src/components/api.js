@@ -1,19 +1,36 @@
 import axios from 'axios';
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = 'http://localhost:3001'; // כתובת השרת
 
-const api = {
-  getStatuses: () => axios.get(`${API_BASE_URL}/statuses`),
-  addStatus: (name) => axios.post(`${API_BASE_URL}/statuses`, { name }),
-  deleteStatus: (name) => axios.delete(`${API_BASE_URL}/statuses/${name}`),
-
-  getTransitions: () => axios.get(`${API_BASE_URL}/transitions`),
-  addTransition: (name, from, to) => 
-    axios.post(`${API_BASE_URL}/transitions`, { name, from, to }),
-  deleteTransition: (name) => axios.delete(`${API_BASE_URL}/transitions/${name}`),
-
-  resetConfig: () => axios.post(`${API_BASE_URL}/reset`),
-  
+// יצירת סטטוס
+export const createStatus = async (name) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/create-status`, { name });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating status:', error);
+        throw error;
+    }
 };
 
-export default api;
+// יצירת מעבר (Transition)
+export const createTransition = async (transition) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/create-transition`, transition);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating transition:', error);
+        throw error;
+    }
+};
+
+// יצירת Workflow
+export const createWorkflow = async (workflowData) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/create-workflow`, workflowData);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating workflow:', error);
+        throw error;
+    }
+};

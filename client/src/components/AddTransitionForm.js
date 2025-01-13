@@ -1,47 +1,48 @@
 import React, { useState } from 'react';
 
-const AddTransitionForm = ({ statuses, onAdd }) => {
-  const [name, setName] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+function AddTransitionForm({ transitions, setTransitions, statuses }) {
+    const [transitionInput, setTransitionInput] = useState({ name: '', from: '', to: '' });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (name && from && to) {
-      onAdd(name, from, to);
-      setName('');
-      setFrom('');
-      setTo('');
-    }
-  };
+    const addTransition = () => {
+        const { name, from, to } = transitionInput;
+        if (!name || !from || !to) return alert('Please fill out all fields.');
+        setTransitions([...transitions, transitionInput]);
+        setTransitionInput({ name: '', from: '', to: '' });
+    };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Enter transition name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <select value={from} onChange={(e) => setFrom(e.target.value)}>
-        <option value="">From</option>
-        {statuses.map((status) => (
-          <option key={status} value={status}>
-            {status}
-          </option>
-        ))}
-      </select>
-      <select value={to} onChange={(e) => setTo(e.target.value)}>
-        <option value="">To</option>
-        {statuses.map((status) => (
-          <option key={status} value={status}>
-            {status}
-          </option>
-        ))}
-      </select>
-      <button type="submit">Add Transition</button>
-    </form>
-  );
-};
+    return (
+        <div>
+            <h2>Add Transition</h2>
+            <input
+                value={transitionInput.name}
+                onChange={(e) => setTransitionInput({ ...transitionInput, name: e.target.value })}
+                placeholder="Transition Name"
+            />
+            <select
+                value={transitionInput.from}
+                onChange={(e) => setTransitionInput({ ...transitionInput, from: e.target.value })}
+            >
+                <option value="" disabled>Select From Status</option>
+                {statuses.map((status, index) => (
+                    <option key={index} value={status}>
+                        {status}
+                    </option>
+                ))}
+            </select>
+            <select
+                value={transitionInput.to}
+                onChange={(e) => setTransitionInput({ ...transitionInput, to: e.target.value })}
+            >
+                <option value="" disabled>Select To Status</option>
+                {statuses.map((status, index) => (
+                    <option key={index} value={status}>
+                        {status}
+                    </option>
+                ))}
+            </select>
+            <button onClick={addTransition}>Add</button>
+        </div>
+    );
+}
 
 export default AddTransitionForm;
