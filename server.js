@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 // משתני סביבה ל-JIRA
 const JIRA_BASE_URL = process.env.JIRA_BASE_URL;
 const JIRA_EMAIL = process.env.JIRA_EMAIL;
-const JIRA_API_TOKEN = process.env.JIRA_API_TOKEN;
+const JIRA_AP_TOK = process.env.JIRA_AP_TOK;
 
 // נתיב לבדיקה אם השרת פעיל
 app.get('/', (req, res) => {
@@ -39,7 +39,7 @@ app.post('/create-workflow', async (req, res) => {
           console.log(`Creating status: ${status}`);
           await axios.post(`${JIRA_BASE_URL}/rest/api/3/status`, 
               { name: status, description: `${status} status` }, 
-              { auth: { username: JIRA_EMAIL, password: JIRA_API_TOKEN } }
+              { auth: { username: JIRA_EMAIL, password: JIRA_AP_TOK } }
           );
       }
 
